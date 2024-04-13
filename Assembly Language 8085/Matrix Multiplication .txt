@@ -1,0 +1,75 @@
+Matrix Multiplication 
+	
+; Initialize data and memory
+
+	LXI B, 4200H ; Load B with the memory address of the first matrix
+	LXI D, 4300H ; Load D with the memory address of the second matrix
+	CALL MUL ; Call the subroutine MUL
+	STA 4500H ; Store the sum in 4500H
+	INX B ; 
+	LXI D, 4302H
+	CALL MUL
+	STA 4501H
+	LXI B, 4200H
+	LXI D, 4301H
+	CALL MUL
+	STA 4502H
+	INX B
+	LXI D, 4303H
+	CALL MUL
+	STA 4503H
+	LXI B, 4202H
+	LXI D, 4300H
+	CALL MUL
+	STA 4504H
+	INX B
+	LXI D, 4302H
+	CALL MUL
+	STA 4505H
+	LXI B, 4202H
+	LXI D, 4301H
+	CALL MUL
+	STA 4506H
+	INX B
+	LXI D, 4303H
+	CALL MUL
+	STA 4507H
+	CALL ADD
+	HLT
+
+; The MUL subroutine
+MUL: LDAX B    ; Load A with the element from the first matrix (B points to the first matrix)
+    MOV C, A  ; Copy the value to C
+    INX D     ; Move to the corresponding element in the second matrix (DE points to the second matrix)
+    LDAX D    ; Load A with the element from the second matrix
+    XCHG      ; Exchange the values in A and C
+    MVI H, 02H ; Initialize H as the loop counter
+
+MULLOOP: ADD C     ; Add the value in C to A (A += C)
+    DCR H     ; Decrement H (loop counter)
+    JNZ MULLOOP ; Repeat the multiplication loop until H becomes zero
+    RET
+
+; The ADD subroutine for summing the elements of the result matrix
+ADD: LXI H, 4500H  ; Load HL with the memory address of the result matrix
+    MOV A, M      ; Load A with the value at 4500H
+    INX H         ; Move to the next element
+    ADD M         ; Add the value at the next memory location to A
+    STA 4600H     ; Store the sum in 4600H
+    INX H         ; Move to the next element
+    MOV A, M      ; Load A with the value at the next memory location
+    INX H         ; Move to the next element
+    ADD M         ; Add the value at the next memory location to A
+    STA 4601H     ; Store the sum in 4601H
+    INX H         ; Move to the next element
+    MOV A, M      ; Load A with the value at the next memory location
+    INX H         ; Move to the next element
+    ADD M         ; Add the value at the next memory location to A
+    STA 4602H     ; Store the sum in 4602H
+    INX H         ; Move to the next element
+    MOV A, M      ; Load A with the value at the next memory location
+    INX H         ; Move to the next element
+    ADD M         ; Add the value at the next memory location to A
+    STA 4603H     ; Store the sum in 4603H
+    RET
+
